@@ -1,9 +1,14 @@
 import re
+import logging
 
 from django import http
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.cache import cache
+from django.db import transaction
+from django.db.models.expressions import F
+
+logger = logging.getLogger(__name__)
 
 from .models import Redirect
 
@@ -34,9 +39,13 @@ class RedirectFallbackMiddleware(MiddlewareMixin):
         super(RedirectFallbackMiddleware, self).__init__(*args, **kwargs)
 
     def increment_redirect(self, pk):
-        redirect = Redirect.objects.get(pk=pk)
-        redirect.nr_times_visited += 1
-        redirect.save()
+        try:
+            with transaction.atomic():
+                Redirect.objects.filter(pk=pk).update(
+                    nr_times_visited=F("nr_times_visited") + 1
+                )
+        except Exception as e:
+            logger.warning(e)
 
     def process_response(self, request, response):
         if response.status_code != 404:

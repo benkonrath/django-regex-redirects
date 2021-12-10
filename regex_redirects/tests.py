@@ -2,8 +2,8 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from django.core.cache import cache
 
-from regex_redirects.models import Redirect
-from regex_redirects.middleware import DJANGO_REGEX_REDIRECTS_CACHE_KEY, DJANGO_REGEX_REDIRECTS_CACHE_REGEX_KEY
+from .models import Redirect
+from .middleware import DJANGO_REGEX_REDIRECTS_CACHE_KEY, DJANGO_REGEX_REDIRECTS_CACHE_REGEX_KEY
 
 
 class RegexRedirectTests(TestCase):
