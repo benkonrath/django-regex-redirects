@@ -1,15 +1,9 @@
-from __future__ import unicode_literals
-
-from unittest.case import skipUnless
-
-from django.conf import settings
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils import six
 from django.core.cache import cache
 
-from .models import Redirect
-from .middleware import DJANGO_REGEX_REDIRECTS_CACHE_KEY, DJANGO_REGEX_REDIRECTS_CACHE_REGEX_KEY
+from regex_redirects.models import Redirect
+from regex_redirects.middleware import DJANGO_REGEX_REDIRECTS_CACHE_KEY, DJANGO_REGEX_REDIRECTS_CACHE_REGEX_KEY
 
 
 class RegexRedirectTests(TestCase):
@@ -21,7 +15,7 @@ class RegexRedirectTests(TestCase):
     def test_model(self):
         r1 = Redirect.objects.create(
             old_path='/initial', new_path='/new_target')
-        self.assertEqual(six.text_type(r1), "/initial ---> /new_target")
+        self.assertEqual(str(r1), "/initial ---> /new_target")
 
     def test_redirect(self):
         redirect = Redirect.objects.create(
